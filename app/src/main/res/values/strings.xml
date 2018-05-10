@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Orders Summary Page</string>
+    <string name="title_province">Order by Province</string>
+    <string name="title_year">Order by Year</string>
+</resources>
