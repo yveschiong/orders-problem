@@ -2,11 +2,14 @@ package com.yveschiong.ordersproblem.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.yveschiong.ordersproblem.App
 import com.yveschiong.ordersproblem.R
+import com.yveschiong.ordersproblem.adapters.YearListAdapter
+import com.yveschiong.ordersproblem.models.Order
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.order_by_year_fragment.view.*
@@ -14,20 +17,22 @@ import java.util.*
 
 class OrderByYearFragment: Fragment() {
 
-    private var textString: String = ""
-
     companion object {
         fun newInstance(): OrderByYearFragment {
             return OrderByYearFragment()
         }
     }
 
+    private var yearListAdapter: YearListAdapter? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.order_by_year_fragment, container, false)
 
-        if (!textString.isEmpty()) {
+        view.recyclerview.layoutManager = LinearLayoutManager(context)
+
+        if (yearListAdapter != null) {
             // Do not fetch the data again since we will get the same results (assuming)
-            view.textView.text = textString
+            view.recyclerview.adapter = yearListAdapter
             return view
         }
 
@@ -39,12 +44,12 @@ class OrderByYearFragment: Fragment() {
                 .filter {
                     var calendar = Calendar.getInstance()
                     calendar.timeInMillis = it.created_at.time
-                    calendar.get(Calendar.YEAR) == 2017
+                    calendar.get(Calendar.YEAR) == 2017 && it.shipping_address.province.isNotEmpty()
                 }
-                .count()
+                .toList()
                 .subscribe({ result ->
-                    textString = String.format(context!!.getString(R.string.year_order_count), result.toInt())
-                    view.textView.text = textString
+                    yearListAdapter = YearListAdapter(result as ArrayList<Order>, context!!)
+                    view.recyclerview.adapter = yearListAdapter
                 }, { error -> error.printStackTrace() })
 
         return view
