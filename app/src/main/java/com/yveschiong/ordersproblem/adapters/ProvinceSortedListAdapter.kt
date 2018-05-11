@@ -4,20 +4,19 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import com.yveschiong.ordersproblem.R
-import com.yveschiong.ordersproblem.fragments.OrderByProvinceFragment
+import com.yveschiong.ordersproblem.models.Customer
+import com.yveschiong.ordersproblem.models.ProvincesOrderData
+import com.yveschiong.ordersproblem.models.ShippingAddress
 import com.yveschiong.ordersproblem.viewholders.ProvinceListHeaderViewHolder
 import com.yveschiong.ordersproblem.viewholders.ProvinceListItemViewHolder
 
-class ProvinceListAdapter(var items: ArrayList<ProvinceOrders>, val context: Context, val controller: OrderByProvinceFragment.ProvinceListActionController): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProvinceSortedListAdapter(var items: ArrayList<ProvincesOrderData>, val context: Context): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         val HEADER_TYPE = 0
         val ITEM_TYPE = 1
     }
-
-    data class ProvinceOrders(val province: String, val orders: Int)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when(viewType) {
@@ -33,7 +32,7 @@ class ProvinceListAdapter(var items: ArrayList<ProvinceOrders>, val context: Con
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position == 0) {
+        if (items[position] is ShippingAddress) {
             return HEADER_TYPE
         }
 
@@ -41,23 +40,19 @@ class ProvinceListAdapter(var items: ArrayList<ProvinceOrders>, val context: Con
     }
 
     override fun getItemCount(): Int {
-        // Include the header item
-        return items.size + 1
+        return items.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder.itemViewType) {
             HEADER_TYPE -> {
-                holder.itemView.setOnClickListener { controller.onItemClicked(position) }
+                (holder as ProvinceListHeaderViewHolder).textView.text = (items[position] as ShippingAddress).province
             }
             ITEM_TYPE -> {
-                setFormattedText((holder as ProvinceListItemViewHolder).textView, position)
+                val customer = (items[position] as Customer)
+                (holder as ProvinceListItemViewHolder).textView.text = String.format(context.getString(R.string.full_name), customer.first_name, customer.last_name)
             }
         }
-    }
-
-    fun setFormattedText(textView: TextView, position: Int) {
-        textView.text = String.format(context.getString(R.string.province_order_count), items[position - 1].orders, items[position - 1].province)
     }
 
 }

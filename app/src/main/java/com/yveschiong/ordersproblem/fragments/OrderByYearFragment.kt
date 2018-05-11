@@ -14,6 +14,8 @@ import java.util.*
 
 class OrderByYearFragment: Fragment() {
 
+    private var textString: String = ""
+
     companion object {
         fun newInstance(): OrderByYearFragment {
             return OrderByYearFragment()
@@ -22,6 +24,12 @@ class OrderByYearFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.order_by_year_fragment, container, false)
+
+        if (!textString.isEmpty()) {
+            // Do not fetch the data again since we will get the same results (assuming)
+            view.textView.text = textString
+            return view
+        }
 
         // Currently only fetching on page 1 and for the year of 2017
         App.graph.getRequestHandler.getOrders(1)
@@ -35,7 +43,8 @@ class OrderByYearFragment: Fragment() {
                 }
                 .count()
                 .subscribe({ result ->
-                    view.textView.text = String.format(context!!.getString(R.string.year_order_count), result.toInt())
+                    textString = String.format(context!!.getString(R.string.year_order_count), result.toInt())
+                    view.textView.text = textString
                 }, { error -> error.printStackTrace() })
 
         return view
