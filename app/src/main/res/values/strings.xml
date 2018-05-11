@@ -2,4 +2,6 @@
     <string name="app_name">Orders Summary Page</string>
     <string name="title_province">Order by Province</string>
     <string name="title_year">Order by Year</string>
+
+    <string name="province_order_count">%1$d number of orders from %2$s</string>
 </resources>

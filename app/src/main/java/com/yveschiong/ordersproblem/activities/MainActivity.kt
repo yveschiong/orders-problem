@@ -3,14 +3,10 @@ package com.yveschiong.ordersproblem.activities
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import android.util.Log
-import com.yveschiong.ordersproblem.App
 import com.yveschiong.ordersproblem.R
 import com.yveschiong.ordersproblem.extensions.replaceFragment
 import com.yveschiong.ordersproblem.fragments.OrderByProvinceFragment
 import com.yveschiong.ordersproblem.fragments.OrderByYearFragment
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
@@ -55,15 +51,5 @@ class MainActivity : BaseActivity() {
 
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         navigation.selectedItemId = R.id.navigation_province
-
-        val ordersCollection = App.graph.getRequestHandler
-        ordersCollection.getOrders(1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ result ->
-                    Log.d("Result", "There are ${result.orders.size} orders")
-                }, { error ->
-                    error.printStackTrace()
-                })
     }
 }
