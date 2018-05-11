@@ -26,8 +26,8 @@ class OrderByProvinceFragment : Fragment() {
 
         view.recyclerview.layoutManager = LinearLayoutManager(context)
 
-        val ordersCollection = App.graph.getRequestHandler
-        ordersCollection.getOrders(1)
+        // Currently only fetching on page 1
+        App.graph.getRequestHandler.getOrders(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .flatMapIterable { it.orders }

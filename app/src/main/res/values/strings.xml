@@ -4,4 +4,5 @@
     <string name="title_year">Order by Year</string>
 
     <string name="province_order_count">%1$d number of orders from %2$s</string>
+    <string name="year_order_count">%1$d number of orders created in 2017</string>
 </resources>
